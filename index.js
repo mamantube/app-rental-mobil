@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { PORT } from "./src/utils/unpublished.js";
+import "./src/config/connection.js";
 
 const app = express();
 app.use(cors());
