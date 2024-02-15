@@ -18,7 +18,7 @@ export default async function () {
 
         const passwordHashing = bcrypt.hashSync(PASSWORD_ADMIN, 10);
 
-        let userAdmin = {
+        let dataAdmin = {
             first_name: "Super",
             last_name: "Admin",
             phone: "+62895534655956",
@@ -27,7 +27,7 @@ export default async function () {
             role_id: findRoleAdmin._doc._id,
         };
 
-        console.log("INI", userAdmin)
+        await userModel.create(dataAdmin)
     }
 
     return;
