@@ -17,7 +17,7 @@ import message from "../../utils/message.js"
 export default async function (req, res) {
     try {
         const body = req.body;
-        message(res, 200, "Regist Success", [1,2]);    
+        message(res, 200, "Regist Success", body);    
     } catch (error) {
        message(res, 500, error?.message || "Internal server error")
     }
