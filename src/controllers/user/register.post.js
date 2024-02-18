@@ -3,7 +3,9 @@ import bcrypt from "bcrypt";
 import message from "../../utils/message.js"
 import { z } from "zod";
 import validation from "../../utils/validation.js";
-import roleModel from "../../models/roles.js"
+import roleModel from "../../models/roles.js";
+import Jwt from "jsonwebtoken";
+import { SECRET_KEY } from "../../utils/unpublished.js";
 
 const schemaValidation = z.object({
     "first_name": z.string().min(1, "Nama depan tidak boleh kosong").trim(),
@@ -50,8 +52,10 @@ export default async function (req, res) {
         };
 
         await userModel.create(newUser)
+
+        const token = Jwt.sign({ role_name: findRoleCustomer._doc.name }, SECRET_KEY, {expiresIn: "120"});
         
-        message(res, 201, "Regist Success", newUser);    
+        message(res, 201, "Regist Success", { token, type: "Bearer"});    
     } catch (error) {
        message(res, 500, error?.message || "Internal server error")
     }
