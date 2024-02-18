@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import message from "../../utils/message.js"
 import { z } from "zod";
 import validation from "../../utils/validation.js";
+import roleModel from "../../models/roles.js"
 
 const schemaValidation = z.object({
     "first_name": z.string().min(1, "Nama depan tidak boleh kosong").trim(),
@@ -31,8 +32,26 @@ export default async function (req, res) {
 
         if(!checkValidation.success)
             return message(res, 422, "Error validation", {
-        errors: checkValidation.errors})
-        message(res, 200, "Regist Success", body, checkValidation);    
+        errors: checkValidation.errors,});
+
+        const findUserbyEmail = await userModel.findOne({ email: checkValidation.data.email, deleted_at: null });
+
+        if (findUserbyEmail)
+            return message(res, 400, "Email sudah terdaftar");
+
+        const findRoleCustomer = await roleModel.findOne({ name: "customer", deleted_at: null });
+        
+        const passwordHashing = bcrypt.hashSync(checkValidation.data.password, 10);
+
+        const newUser = {
+            ...checkValidation.data,
+            password: passwordHashing,
+            role_id: findRoleCustomer._doc._id,
+        };
+
+        await userModel.create(newUser)
+        
+        message(res, 201, "Regist Success", newUser);    
     } catch (error) {
        message(res, 500, error?.message || "Internal server error")
     }
