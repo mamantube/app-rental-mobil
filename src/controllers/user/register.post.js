@@ -5,7 +5,7 @@ import { z } from "zod";
 import validation from "../../utils/validation.js";
 import roleModel from "../../models/roles.js";
 import Jwt from "jsonwebtoken";
-import { SECRET_KEY } from "../../utils/unpublished.js";
+import { SECRET_KEY } from "../../utils/unpublished.js"
 
 const schemaValidation = z.object({
     "first_name": z.string().min(1, "Nama depan tidak boleh kosong").trim(),
