@@ -59,6 +59,11 @@ export default async function (req, res) {
                     password: 0,
                 }
             },
+            
+        ]
+
+        const data = await userModel.aggregate([
+            ...filter,
             {
                 $match: {
                     $or: [
@@ -70,13 +75,13 @@ export default async function (req, res) {
                     "role_detail.name": "customer",
                     deleted_at: null,
                 },
-            },
-            
-        ]
+            }],
+            ).sort({ _id: sort_by }).skip(skip).limit(per_page);
 
-        const data = await userModel.aggregate(filter).sort({ _id: sort_by }).skip(skip).limit(per_page);
-
-        const countDocument = await userModel.aggregate(filter).count("total")
+        const countDocument = await userModel.aggregate([
+            ...filter, { $match: { "role_detail.name": "customer",
+        deleted_at: null, }}], { $match: { "role_detail.name": "customer",
+        deleted_at: null, }}).count("total")
 
         const pagination = {
             page,
