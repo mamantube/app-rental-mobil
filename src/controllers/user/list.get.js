@@ -78,6 +78,8 @@ export default async function (req, res) {
             }],
             ).sort({ _id: sort_by }).skip(skip).limit(per_page);
 
+        if(!data.length) return message(res, 404, "Data user tidak ditemukan");
+
         const countDocument = await userModel.aggregate([
             ...filter, { $match: { "role_detail.name": "customer",
         deleted_at: null, }}], { $match: { "role_detail.name": "customer",
