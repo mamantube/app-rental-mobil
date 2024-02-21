@@ -47,8 +47,8 @@ export default async function (req, res) {
                 $lookup: {
                     from: "roles",
                     foreignField: "_id",
-                    localField: "storage_id",
-                    as: "storage_detail",
+                    localField: "role_id",
+                    as: "role_detail",
                 },
             },
             {
