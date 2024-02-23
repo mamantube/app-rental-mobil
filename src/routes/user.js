@@ -1,19 +1,22 @@
 import express from "express";
-import registerPost from "../controllers/user/register.post.js";
-import loginPost from "../controllers/user/login.post.js";
-import listGet from "../controllers/user/list.get.js";
-import detailGet from "../controllers/user/detail.get.js";
-import restorePatch from "../controllers/user/restore.patch.js";
-import removeDelete from "../controllers/user/remove.delete.js";
+import Regist from "../controllers/user/register.post.js";
+import Login from "../controllers/user/login.post.js";
+import List from "../controllers/user/list.get.js";
+import Detail from "../controllers/user/detail.get.js";
+import Update from "../controllers/user/update.put.js";
+import Restore from "../controllers/user/restore.patch.js";
+import Remove from "../controllers/user/remove.delete.js";
+
 
 const userRoute = express.Router();
 
-userRoute.post("/user/register", registerPost);
-userRoute.post("/user/login", loginPost);
-userRoute.get("/user", listGet);
-userRoute.get("/user/:_id", detailGet);
-userRoute.patch("/user/restore/:_id", restorePatch);
-userRoute.delete("/user/remove/:_id", removeDelete);
+userRoute.post("/user/register", Regist);
+userRoute.post("/user/login", Login);
+userRoute.get("/user", List);
+userRoute.get("/user/:_id", Detail);
+userRoute.put("/user/:_id", Update);
+userRoute.patch("/user/restore/:_id", Restore);
+userRoute.delete("/user/remove/:_id", Remove);
 
 
 export default userRoute;
