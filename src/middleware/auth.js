@@ -19,7 +19,9 @@ import message from "../utils/message.js";
 
 
 export function authorization (req, res, next) {
-    const token = req.headers;
+    const token = req.headers["authorization"];
 
-    message(res, 200, "token", token);
+    if (!token) return message(res, 401, "Token authorization dubutuhkan")
+
+    next();
 }
