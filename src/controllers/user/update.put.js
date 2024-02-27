@@ -32,15 +32,19 @@ export default async function (req, res) {
         const checkValidation = validation(schemaValidation, body);
         
         if (!checkValidation.success)
-            return message(res, 422, "Validasi error", { errors: checkValidation.errors,});
-
+        return message(res, 422, "Validasi error", { errors: checkValidation.errors,});
+    
         const findUserById = await userModel.findOne({ _id: new Types.ObjectId(_id), deleted_at: null, })
-
+    
         if (!findUserById) return message(res, 404, "User tidak ditemukan")
+    
+        const file = req.file;
 
+        if (file) {}
+        
         const updateUser = await userModel.findByIdAndUpdate({ _id, deleted_at: null, }, {...checkValidation.data}, { new: true});
 
-        message(res, 200, "Data user berhasil diupdate", updateUser);
+        message(res, 200, "Data user berhasil diupdate", updateUser, file);
     } catch (error) {
         message(res, 500, error?.message || "Server internal error");
     }

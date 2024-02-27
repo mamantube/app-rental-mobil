@@ -3,18 +3,16 @@ import path from "path"
 import message from "../utils/message.js";
 
 
-// jika butuh untuk merubah nama file yang diupload 
-
-// const Storage = multer.diskStorage({
-//     filename: (req, file, cb) => {
-//         const ext = path.extname(file.originalname);
-//         const result = `img-${Date.now()}${ext}`;
-//         cb(null, result)
-//     },
-// });
+const Storage = multer.diskStorage({
+    filename: (req, file, cb) => {
+        // const ext = path.extname(file.originalname);
+        // const result = `img-${Date.now()}${ext}`;  jika ingin merubah nama file
+        cb(null, file.originalname)
+    },
+});
 
 const Upload = multer({
-    // storage: Storage,
+    storage: Storage,
     limits: {fileSize: 1 * 1024 *1024},
     fileFilter: (req, file, cb) => {
         const ext = path.extname(file.originalname.toLowerCase());
