@@ -1,6 +1,7 @@
-import Jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import userModel from "../models/users.js";
 import message from "../utils/message.js";
+import { SECRET_KEY } from "../utils/unpublished.js"
 
 
 /**
@@ -18,12 +19,67 @@ import message from "../utils/message.js";
  */
 
 
-export function authorization (req, res, next) {
+export function authentication (req, res, next) {
     const authorization = req.headers["authorization"];
 
-    if (!authorization) return message(res, 401, "Token authorization dubutuhkan")
+    if (!authorization) return message(res, 401, "Authorization dibutuhkan")
+    
 
-    const token = authorization;
+    const token = authorization.replace("Bearer ", "");
 
-    message(res, 200, "token", token);
+    
+    jwt.verify(token, SECRET_KEY, (err, decoded) => {
+
+        if (err) {
+            const {name, message : msg} = err;
+
+            const isTokenInvalid = name === "JsonWebTokenError";
+            const isTokenExpired = name === "TokenExpiredError";
+            
+            
+            // if (isTokenInvalid) return message(res, 403, "Token tidak valid");
+            // else if (isTokenExpired) return message(res, 403, "Token sudah kadaluarsa");
+            // else return message(res, 403, msg)
+            
+            const resultMessage = isTokenInvalid ? "Token tidak valid" : isTokenExpired ? "Token sudah kadaluarsa" : msg
+
+            return message(res, 403, resultMessage)
+        };
+
+        res.decoded = {
+            user_id: decoded.user_id,
+            role_name: decoded.role_name,
+        }
+
+        next();
+    })}
+
+export function admin (req, res, next) {
+    const { role_name } = res.decoded;
+
+    if(role_name === "customer")
+        return message(res, 403, "Akses tidak diizinkan")
+
+    next();
+}
+
+
+
+export function customer (req, res, next) {
+    const { role_name } = res.decoded;
+
+    if(role_name === "admin")
+        return message(res, 403, "Akses tidak diizinkan")
+
+    next();
+}
+
+export function validateUserId (req, res, next) {
+    const { user_id } = res.decoded;
+    const _id = req.params._id;
+
+    if (user_id !== _id)
+        return message(res, 403, "Akses tidak diizinkan")
+
+    next();
 }
