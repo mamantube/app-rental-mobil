@@ -7,7 +7,7 @@ import Update from "../controllers/user/update.put.js";
 import Restore from "../controllers/user/restore.patch.js";
 import Remove from "../controllers/user/remove.delete.js";
 import { authentication, validateUserId, admin, customer } from "../middleware/auth.js";
-import UploadImg from "../middleware/upload.js";
+import UploadImg from "../middleware/uploadImg.js";
 
 
 const userRoute = express.Router();
