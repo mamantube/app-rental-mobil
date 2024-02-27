@@ -53,7 +53,7 @@ export default async function (req, res) {
 
         await userModel.create(newUser)
 
-        const token = Jwt.sign({ role_name: findRoleCustomer._doc.name }, SECRET_KEY, {expiresIn: "120"});
+        const token = Jwt.sign({ role_name: findRoleCustomer._doc.name }, SECRET_KEY, {expiresIn: "2h"});
         
         message(res, 201, "Regist Success", { token, type: "Bearer"});    
     } catch (error) {
