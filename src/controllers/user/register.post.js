@@ -51,12 +51,16 @@ export default async function (req, res) {
             role_id: findRoleCustomer._doc._id,
         };
 
-        await userModel.create(newUser)
+        const dataUser = await userModel.create(newUser)
 
-        const token = Jwt.sign({ role_name: findRoleCustomer._doc.name }, SECRET_KEY, {expiresIn: "2h"});
+        const token = Jwt.sign({ user_id: dataUser._doc._id, role_name: findRoleCustomer._doc.name }, SECRET_KEY, {expiresIn: "2h"});
         
         message(res, 201, "Regist Success", { token, type: "Bearer"});    
     } catch (error) {
        message(res, 500, error?.message || "Internal server error");
     }
+}
+
+export function admin (req, res, next) {
+
 }

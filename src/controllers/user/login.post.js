@@ -66,7 +66,7 @@ export default async function (req, res) {
         if (!isPassword) 
             return message(res, 400, "Password yang anda masukkan salah");
 
-        const token = Jwt.sign({ role_name: detailUser.role_detail.name }, SECRET_KEY, { expiresIn: "2h" });
+        const token = Jwt.sign({ user_id: detailUser._id, role_name: detailUser.role_detail.name }, SECRET_KEY, { expiresIn: "2h" });
 
         message(res, 200, "Login berhasil", {token, type: "Bearer" });
     } catch (error) {
