@@ -3,13 +3,7 @@ import path from "path"
 import message from "../utils/message.js";
 
 
-const Storage = multer.diskStorage({
-    filename: (req, file, cb) => {
-        // const ext = path.extname(file.originalname);
-        // const result = `img-${Date.now()}${ext}`;  jika ingin merubah nama file
-        cb(null, file.originalname)
-    },
-});
+const Storage = multer.memoryStorage()
 
 const Upload = multer({
     storage: Storage,

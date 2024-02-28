@@ -3,7 +3,8 @@ import message from "../../utils/message.js";
 import { z } from "zod";
 import validation from "../../utils/validation.js";
 import { Types } from "mongoose";
-
+import storageModel from "../../models/storage.js";
+import cloudinary from "cloudinary";
 
 const schemaValidation = z.object({
     "first_name": z.string().min(1, "Nama depan tidak boleh kosong").trim(),
@@ -26,6 +27,8 @@ const schemaValidation = z.object({
  */
 
 export default async function (req, res) {
+    const file = req.file;
+
     try {
         const body = req.body;
         const _id = req.params._id;
@@ -37,15 +40,41 @@ export default async function (req, res) {
         const findUserById = await userModel.findOne({ _id: new Types.ObjectId(_id), deleted_at: null, })
     
         if (!findUserById) return message(res, 404, "User tidak ditemukan")
+
+        let payload = {}
+
+        if (file) {
+
+            const storage_id = findUserById._doc.storage_id;
+            const findStorageId = await storageModel.findById({ _id: storage_id })
+
+            if (findStorageId) {
+                //delete file on cloudinary
+                await cloudinary.v2.uploader.destroy(findStorageId._doc.public_id)
     
-        const file = req.file;
+                //delete file on storage
+                await storageModel.deleteOne({ _id: storage_id })
+            }
 
-        if (file) {}
-        
-        const updateUser = await userModel.findByIdAndUpdate({ _id, deleted_at: null, }, {...checkValidation.data}, { new: true});
 
-        message(res, 200, "Data user berhasil diupdate", updateUser, file);
+            const uploadResult = await new Promise((resolve) => {
+                cloudinary.v2.uploader.upload_stream((error, uploadResult) => {
+                    return resolve(uploadResult);
+                }).end(file.buffer);
+            });
+
+            //create document on storage
+            const addToStorage = await storageModel.create({ public_id: uploadResult.public_id, secure_url: uploadResult.secure_url });
+
+            payload.storage_id = addToStorage._doc._id;
+        }
+
+        const updateUser = await userModel.findByIdAndUpdate({ _id, deleted_at: null, }, {...payload, ...checkValidation.data}, { new: true});
+
+        message(res, 200, "Data user berhasil diupdate", updateUser);
     } catch (error) {
         message(res, 500, error?.message || "Server internal error");
+    } finally {
+        if (file && file.buffer) file.buffer = undefined;
     }
 }
