@@ -3,10 +3,12 @@ import Create from "../controllers/product/create.post.js";
 import { authentication, admin} from "../middleware/auth.js"
 import UploadImg from "../middleware/uploadImg.js";
 import listAdm from "../controllers/product/listAdm.get.js";
+import Detail from "../controllers/product/detail.get.js";
 
 const productRoute = express.Router();
 
 productRoute.post("/product/new", authentication, admin, UploadImg, Create);
 productRoute.get("/product", authentication, admin, listAdm);
+productRoute.get("/product/:_id", authentication, Detail);
 
 export default productRoute;
