@@ -5,6 +5,7 @@ import "./src/config/connection.js";
 import seedDB from "./src/utils/seed_db.js";
 import userRoute from "./src/routes/user.js";
 import "./src/config/cloudinary.js"
+import productRoute from "./src/routes/product.js";
 
 const app = express();
 app.use(cors());
@@ -12,6 +13,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 await seedDB();
 
-app.use("/api/v1", userRoute)
+app.use("/api/v1", [userRoute, productRoute])
 
 app.listen(PORT, () => console.log(`service running on http://localhost:${PORT}`));
