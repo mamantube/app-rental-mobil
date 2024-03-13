@@ -30,16 +30,19 @@ export default async function (req, res) {
     const file = req.file;
 
     try {
-        const body = req.body;
+
         const _id = req.params._id;
+        
+        const findUserById = await userModel.findOne({ _id: new Types.ObjectId(_id), deleted_at: null, })
+    
+        if (!findUserById) return message(res, 404, "User tidak ditemukan")
+
+        const body = req.body;
         const checkValidation = validation(schemaValidation, body);
         
         if (!checkValidation.success)
         return message(res, 422, "Validasi error", { errors: checkValidation.errors,});
     
-        const findUserById = await userModel.findOne({ _id: new Types.ObjectId(_id), deleted_at: null, })
-    
-        if (!findUserById) return message(res, 404, "User tidak ditemukan")
 
         let payload = {}
 
