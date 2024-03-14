@@ -7,6 +7,7 @@ import Detail from "../controllers/product/detail.get.js";
 import Remove from "../controllers/product/remove.delete.js";
 import Restore from "../controllers/product/restore.patch.js";
 import Update from "../controllers/product/update.put.js";
+import listCust from "../controllers/product/customer/listCust.get.js";
 
 const productRoute = express.Router();
 
@@ -16,5 +17,6 @@ productRoute.get("/product/:_id", authentication, admin, Detail);
 productRoute.delete("/product/remove/:_id", authentication, admin, Remove);
 productRoute.patch("/product/restore/:_id", authentication, admin, Restore);
 productRoute.put("/product/:_id", authentication, admin, UploadImg, Update);
+productRoute.get("/customer/product", listCust);
 
 export default productRoute;
