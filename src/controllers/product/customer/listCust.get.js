@@ -33,9 +33,9 @@ export default async function (req, res) {
         if(!checkValidation.success)
             return message(res, 422, "Validasi error", {
                 errors: checkValidation.errors,
-            })
+            });
 
-        const findProduct = await transactionModel.find({
+        const findTransaction = await transactionModel.find({
             $or: [
                 {
                     "rental_duration.start_date": { $lte: new Date(end_date) },
@@ -52,7 +52,7 @@ export default async function (req, res) {
             deleted_at: null,
         });
 
-        let product_ids = findProduct.map((transaction) => transaction._doc.product_ids).flat();
+        let product_ids = findTransaction.map((transaction) => transaction._doc.product_ids).flat();
 
         const q = req.query.q || "";
         // const sort_by = req.query.sort_by ? req.query.sort_by : "desc";
