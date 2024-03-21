@@ -30,16 +30,29 @@ export default async function (req, res) {
 
         const checkValidation = validation(schemaValidation, req.query)
 
+        if(!checkValidation.success)
+            return message(res, 422, "Validasi error", {
+                errors: checkValidation.errors,
+            })
+
         const findProduct = await transactionModel.find({
             $or: [
                 {
                     "rental_duration.start_date": { $lte: new Date(end_date) },
                     "rental_duration.end_date": { $gte: new Date(start_date) },
                 },
+                {
+                    "rental_duration.start_date": { $gte: new Date(start_date), $lte: new Date(end_date)},
+                },
+                {
+                    "rental_duration.end_date": { $gte: new Date(start_date), $lte: new Date(end_date)},
+                },
             ],
             status: { $nin: ["failure", "refund"] },
             deleted_at: null,
-        })
+        });
+
+        let product_ids = findProduct.map((transaction) => transaction._doc.product_ids).flat();
 
         const q = req.query.q || "";
         // const sort_by = req.query.sort_by ? req.query.sort_by : "desc";
@@ -52,6 +65,8 @@ export default async function (req, res) {
             {
                 $match: {
                     name: { $regex: q, $options: "i"},
+                    _id: { $nin: product_ids},
+                    deleted_at: null,
                 },
             },
             {
@@ -77,7 +92,7 @@ export default async function (req, res) {
             total: countDocuments.length ? countDocuments[0].total : 0,
         };
 
-        message(res, 200, "List product", findProduct, checkValidation);
+        message(res, 200, "List product", data, pagination);
         
     } catch (error) {
         message(res, 500, error?.message || "Server internal error")
