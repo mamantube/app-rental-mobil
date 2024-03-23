@@ -60,6 +60,25 @@ export default async function (req, res) {
     
         const order_id = `MAREMO-${nanoid(5)}-${nanoid(3)}`;
 
+        const findTransaction = await transactionModel.find({
+            $or: [
+                {
+                    "rental_duration.start_date": {
+                        $lte: new Date(checkValidation.data.rental_duration.end_date),
+                    },
+                    "rental_duration.end_date": {
+                        $gte: new Date(checkValidation.data.rental_duration.start_date),
+                    },
+                }
+            ],
+            product_ids: { $in: checkValidation.data.product_ids}, 
+            status: { $nin: ["failure", "refund"] },
+            deleted_at: null,
+        });
+
+        if (findTransaction.length)
+            return message(res, 400, "Sudah ada yang menyewa mobil ini")
+
         let item_details = findProductId.map((product) => {
             return {
                 id: product._doc._id,
@@ -87,11 +106,13 @@ export default async function (req, res) {
             item_details
         };
 
+        
         let snap = new midtransClient.Snap({
             isProduction: false,
             serverKey: MIDTRANS_SERVER_KEY,
             clientKey: MIDTRANS_CLIENT_KEY,
         });
+
 
         snap.createTransaction(parameter).then( async (response) => {
             const payload = {
@@ -110,8 +131,7 @@ export default async function (req, res) {
             message(res, 500, "Midtrans", {
                 errors,
             })
-        })
-
+        });
     } catch (error) {
         message(res, 500, error?.message || "Server internal error")
     }
