@@ -41,7 +41,7 @@ export default async function (req, res) {
             fraud_status,
          } = response
 
-        if (![200, 201].includes(Number(status_code))) {
+        if ([200, 201].includes(Number(status_code))) {
             let status =  "";
     
             if (transaction_status == 'capture') {
