@@ -54,7 +54,7 @@ export default async function (req, res) {
 
         if (!detail.length)
             return message(res, 404, "Transaksi tidak ditemukan")
-        message(res, 200, "Detail transaksi", detail)
+        message(res, 200, "Detail transaksi", detail[0])
     } catch (error) {
         message(res, 500, error?.message || "Server internal error")
     }
