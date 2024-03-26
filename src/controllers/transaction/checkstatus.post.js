@@ -40,10 +40,6 @@ export default async function (req, res) {
             transaction_status,
             fraud_status,
          } = response
-        
-
-        if ([404].includes(Number(status_code)))
-            return message(res, Number(status_code), `${status_message} please check your transactions`)
 
         if (![200, 201].includes(Number(status_code))) {
             let status =  "";
@@ -73,6 +69,9 @@ export default async function (req, res) {
             
             return message(res, 200, "Cek status transaksi", transactionDetail);
         }
+
+        if ([404].includes(Number(status_code)))
+            return message(res, Number(status_code), `${status_message} please check your transactions`)
 
         message(res, Number(status_code), status_message)
     } catch (error) {
