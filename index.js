@@ -14,6 +14,9 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 await seedDB();
 
-app.use("/api/v1", [userRoute, productRoute, transactionRoute])
+app.use("/api/v1", [userRoute, productRoute, transactionRoute]);
+app.all("*", (req, res) => {
+    res.status(404).send({ code: 404, message: "Not found"})
+});
 
 app.listen(PORT, () => console.log(`service running on http://localhost:${PORT}`));
