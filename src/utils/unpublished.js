@@ -11,6 +11,7 @@ const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET;
 const MIDTRANS_CLIENT_KEY = process.env.MIDTRANS_CLIENT_KEY;
 const MIDTRANS_SERVER_KEY = process.env.MIDTRANS_SERVER_KEY;
 const MIDTRANSS_URL_API = process.env.MIDTRANSS_URL_API;
+const URL_REAL_MONGODB = process.env.URL_REAL_MONGODB; //gunakan pada config jika sudah deploy
 
 export {
     PORT,
@@ -24,4 +25,5 @@ export {
     MIDTRANS_CLIENT_KEY,
     MIDTRANS_SERVER_KEY,
     MIDTRANSS_URL_API,
+    URL_REAL_MONGODB,
 }
