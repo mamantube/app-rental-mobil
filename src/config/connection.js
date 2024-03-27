@@ -6,5 +6,5 @@ try {
 
     console.log("DB has been connected ")
 } catch (error) {
-    console.error.error("failed connect to DB", error)
+    console.error("failed connect to DB", error)
 }
