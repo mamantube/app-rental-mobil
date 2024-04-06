@@ -4,11 +4,7 @@ import validation from "../../utils/validation.js";
 import { z } from "zod";
 
 const schemaValidation = z.object({
-    refund_date: z.coerce.date().refine((value) => {
-        let toDay = new Date();
-        toDay.setHours(toDay.getHours() - 24);
-        return value > toDay;
-    }, "Refund tidak bisa dilakukan karena sudah masuk waktu penyewaan"),
+    // refund_date: z.coerce.date(),
     note_refund: z.string().min(10, "Masukkan minimal 10 karakter").max(50, "Masukkan maksimal 50 karakter")
 })
 
@@ -45,9 +41,24 @@ export default async function (req, res) {
         })
 
         if (!findTransaction)
-            return message(res, 404, "Transaksi tidak ditemukna")
-        
-        message(res, 200, "Refund berhasil", checkValidation, findTransaction)
+            return message(res, 404, "Transaksi tidak ditemukan")
+
+        const { start_date } = findTransaction._doc.rental_duration;
+        const today = new Date();
+        const timeDifference = start_date.getTime() - today.getTime();
+        const hourDifference = timeDifference / ( 1000 * 60 * 60);
+        const isBefore24Hours = hourDifference >= 24;
+
+        if (!isBefore24Hours)
+            return message(res, 400, "Maaf, pengembalian dana tidak bisa dilakukan karena waktu sewa kurang dari 24 jam. Silahkan baca kembali perjanjian.");
+
+        const detail = await transactionModel.findOneAndUpdate(
+            { _id }, 
+            { ...checkValidation.data, status: "refund" },
+            { new: true},
+        );
+
+        message(res, 200, "Refund berhasil", detail)
     } catch (error) {
         message(res, 500, error?.message || "Server internal error")
     }
