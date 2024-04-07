@@ -502,6 +502,14 @@
 						"header": []
 					},
 					"response": []
+				},
+				{
+					"name": "Reschedule",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			]
 		}
