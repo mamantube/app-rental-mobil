@@ -3,10 +3,12 @@ import transactionModel from "../../models/transaction.js";
 import validation from "../../utils/validation.js";
 import { z } from "zod";
 
-const schemaValidation = z.object({
-    // refund_date: z.coerce.date(),
-    note_refund: z.string().min(10, "Masukkan minimal 10 karakter").max(50, "Masukkan maksimal 50 karakter")
-})
+const schemaValidation = z.object({ 
+    start_date: z.coerce.date(),
+    end_date: z.coerce.date(),
+}).refine((data) => {
+    return !data.end_date || data.start_date <= data.end_date;
+}, "start_date tidak boleh lebih besar dari pada end_date");
 
 
 /**
@@ -50,7 +52,7 @@ export default async function (req, res) {
         const isBefore24Hours = hourDifference >= 24;
 
         if (!isBefore24Hours)
-            return message(res, 400, "Maaf, pengembalian dana tidak bisa dilakukan karena waktu sewa kurang dari 24 jam. Silahkan baca kembali perjanjian.");
+            return message(res, 400, "Maaf, tidak dapat merubah tanggal penyewaan karena sudah masuk tanggal penyewaan");
 
         const detail = await transactionModel.findOneAndUpdate(
             { _id }, 
