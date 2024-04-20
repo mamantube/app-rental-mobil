@@ -1,0 +1,90 @@
+/* heading */
+
+.text-h1 {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.text-h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.text-h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.text-h4 {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.text-h5 {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.text-h6 {
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+/* SUB HEADING */
+
+.text-s1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.text-s2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.text-s3 {
+    font-size: 1.155rem;
+    font-weight: 600;
+}
+
+.text-s4 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.text-s5 {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+/* PARAGRAPH */
+
+.text-p1 {
+    font-size: 1.25rem;
+    font-weight: 400;
+}
+
+.text-p2 {
+    font-size: 1.125rem;
+    font-weight: 400;
+}
+
+.text-p3 {
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.text-p4 {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.text-p5 {
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+.text-p6 {
+    font-size: 0.5rem;
+    font-weight: 600;
+}
