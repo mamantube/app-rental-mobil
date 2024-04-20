@@ -1,0 +1,14 @@
+#card__form__auth {
+    max-width: 25rem;
+    width: 100vh;
+    border: 1.5px solid #ACB5BD;
+}
+
+#card__form__auth .body__form {
+    padding: 1.5rem;
+}
+
+#card__form__auth .body__form .title__form,
+#card__form__auth .body__form .subtitle__form {
+    margin-bottom: 1rem;
+}
