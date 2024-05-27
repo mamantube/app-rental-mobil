@@ -82,7 +82,8 @@ export default async function (req, res) {
             // },
             {
                 $match: {
-                    name: { $regex: q, $options: "i" }
+                    name: { $regex: q, $options: "i" },
+                    deleted_at: null,
                 }
             },
             {
