@@ -10,7 +10,7 @@ import { SECRET_KEY } from "../../utils/unpublished.js"
 const schemaValidation = z.object({
     "first_name": z.string().min(1, "Nama depan tidak boleh kosong").trim(),
     "last_name": z.string().trim(),
-    "phone": z.number().min(1, "Nomor Handphone tidak boleh kosong").regex(/^(\+62|62)?[\s-]?0?8[1-9]{1}\d{1}[\s-]?\d{4}[\s-]?\d{2,5}$/, "Nomor handphone tidak valid"),
+    "phone": z.string().min(1, "Nomor Handphone tidak boleh kosong").regex(/^(\+62|62)?[\s-]?0?8[1-9]{1}\d{1}[\s-]?\d{4}[\s-]?\d{2,5}$/, "Nomor handphone tidak valid"),
     "email": z.string().email("Email tidak valid"),
     "password": z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/, "Password anda tidak sesuai ketentuan") //Minimum six characters, at least one uppercase letter, one lowercase letter and one number
 })
