@@ -72,7 +72,7 @@ export default async function (req, res) {
     if (!isPassword)
       return message(res, 400, "Password yang anda masukkan salah");
 
-    const role_user = detailUser.role_detail;
+    const role_user = detailUser.role_detail.name;
 
     const token = Jwt.sign(
       { user_id: detailUser._id, role_name: detailUser.role_detail.name },
