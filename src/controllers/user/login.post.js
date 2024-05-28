@@ -4,72 +4,82 @@ import userModel from "../../models/users.js";
 import message from "../../utils/message.js";
 import bcrypt from "bcrypt";
 import Jwt from "jsonwebtoken";
-import { SECRET_KEY } from "../../utils/unpublished.js"
-
-
+import { SECRET_KEY } from "../../utils/unpublished.js";
 
 const schemaValidation = z.object({
-    email: z.string().email("Email tidak valid"),
-    password: z.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/, "Password yang anda masukkan salah") //Minimum six characters, at least one uppercase letter, one lowercase letter and one number
-})
+  email: z.string().email("Email tidak valid"),
+  password: z
+    .string()
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
+      "Password yang anda masukkan salah"
+    ), //Minimum six characters, at least one uppercase letter, one lowercase letter and one number
+});
 
 /**
- * 
- * @typedef {import("express").Request} ExpressRequest 
+ *
+ * @typedef {import("express").Request} ExpressRequest
  * @typedef {import("express").Response} ExpressResponse
  */
 
 /**
- * 
- * @param {ExpressRequest} req 
- * @param {ExpressResponse} res 
+ *
+ * @param {ExpressRequest} req
+ * @param {ExpressResponse} res
  */
 
 export default async function (req, res) {
-    try {
-        const body = req.body;
-        
-        const checkValidation = validation(schemaValidation, body);
+  try {
+    const body = req.body;
 
-        if (!checkValidation.success)
-            return message(res, 422, "Validasi error", {
-                errors: checkValidation.errors,
-        });
+    const checkValidation = validation(schemaValidation, body);
 
-        const findUserByEmail = await userModel.aggregate([
-            {
-                $match: {
-                    email: checkValidation.data.email,
-                    deleted_at: null,
-                },
-            },
-            {
-                $lookup: {
-                    from: "roles",
-                    foreignField: "_id",
-                    localField: "role_id",
-                    as: "role_detail",
-                },
-            },
-            {
-                $unwind: "$role_detail"
-            },
-        ]);
+    if (!checkValidation.success)
+      return message(res, 422, "Validasi error", {
+        errors: checkValidation.errors,
+      });
 
-        if (!findUserByEmail.length) 
-            return message(res, 400, "Email yang anda masukkan belum terdaftar");
+    const findUserByEmail = await userModel.aggregate([
+      {
+        $match: {
+          email: checkValidation.data.email,
+          deleted_at: null,
+        },
+      },
+      {
+        $lookup: {
+          from: "roles",
+          foreignField: "_id",
+          localField: "role_id",
+          as: "role_detail",
+        },
+      },
+      {
+        $unwind: "$role_detail",
+      },
+    ]);
 
-        const detailUser = findUserByEmail[0];
+    if (!findUserByEmail.length)
+      return message(res, 400, "Email yang anda masukkan belum terdaftar");
 
-        const isPassword = bcrypt.compareSync(checkValidation.data.password, findUserByEmail[0].password);
+    const detailUser = findUserByEmail[0];
 
-        if (!isPassword) 
-            return message(res, 400, "Password yang anda masukkan salah");
+    const isPassword = bcrypt.compareSync(
+      checkValidation.data.password,
+      findUserByEmail[0].password
+    );
 
-        const token = Jwt.sign({ user_id: detailUser._id, role_name: detailUser.role_detail.name }, SECRET_KEY, { expiresIn: "2h" });
+    if (!isPassword)
+      return message(res, 400, "Password yang anda masukkan salah");
 
-        message(res, 200, "Login berhasil", {token, type: "Bearer" });
-    } catch (error) {
-        message(res, 500, error?.message || "Server internal error");
-    }
+    const token = Jwt.sign(
+      { user_id: detailUser._id, role_name: detailUser.role_detail.name },
+      SECRET_KEY,
+      { expiresIn: "2h" }
+    );
+
+    message(res, 200, "Login berhasil", { detailUser, token, type: "Bearer" },);
+  } catch (error) {
+    message(res, 500, error?.message || "Server internal error");
+  }
 }
