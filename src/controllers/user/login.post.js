@@ -73,6 +73,7 @@ export default async function (req, res) {
       return message(res, 400, "Password yang anda masukkan salah");
 
     const role_user = detailUser.role_detail.name;
+    const user_id = detailUser._id
 
     const token = Jwt.sign(
       { user_id: detailUser._id, role_name: detailUser.role_detail.name },
@@ -80,7 +81,7 @@ export default async function (req, res) {
       { expiresIn: "1h" }
     );
 
-    message(res, 200, "Login berhasil", { role_user, token, type: "Bearer" },);
+    message(res, 200, "Login berhasil", { role_user,user_id, token, type: "Bearer" },);
   } catch (error) {
     message(res, 500, error?.message || "Server internal error");
   }
