@@ -81,7 +81,7 @@ export default async function (req, res) {
       { expiresIn: "1h" }
     );
 
-    message(res, 200, "Login berhasil", { role_user,user_id, token, type: "Bearer" },);
+    message(res, 200, "Login berhasil", { role_user, user_id, token, type: "Bearer" },);
   } catch (error) {
     message(res, 500, error?.message || "Server internal error");
   }
