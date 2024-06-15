@@ -16,6 +16,6 @@ transactionRoute.get("/transaction/:_id", authentication, Detail);
 transactionRoute.post("/transaction/check-status/:order_id", authentication, CheckStatus);
 transactionRoute.put("/transaction/refund/:_id", authentication, admin, Refund);
 transactionRoute.put("/transaction/:_id", authentication, customer, Reschedule);
-transactionRoute.delete("/transaction/delete/:order_id", authentication, customer, Erase)
+transactionRoute.delete("/transaction/erase/:order_id", authentication, customer, Erase)
 
 export default transactionRoute;
