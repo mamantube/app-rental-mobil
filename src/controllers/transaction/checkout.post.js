@@ -120,6 +120,7 @@ export default async function (req, res) {
                 ...checkValidation.data,
                 token: response.token,
                 redirect_url: response.redirect_url,
+                order_id: response.order_id
             };
 
             await transactionModel.create(payload);
