@@ -13,10 +13,10 @@ import message from '../../utils/message.js';
 
 export default async function (req, res) {
   try {
-    const token= req.params.token
+    const token= order_id.params.token
 
     const findTransaction = await transactionModel.findOneAndDelete({
-      token,
+      order_id,
       deleted_at: null,
     });
 
